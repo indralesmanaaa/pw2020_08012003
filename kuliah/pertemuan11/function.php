@@ -1,5 +1,7 @@
 <?php
 
+use LDAP\Result;
+
 function koneksi()
 {
   return mysqli_connect('localhost', 'root', 'root', 'pw_08012003');
@@ -71,4 +73,21 @@ function ubah($data)
             WHERE id=$id";
   mysqli_query($conn, $query) or die(mysqli_error($conn));
   return mysqli_affected_rows($conn);
+}
+
+function cari($keywoard)
+{
+  $conn = koneksi();
+
+  $query = "SELECT * FROM mahasiswa
+            WHERE nama LIKE '%$keywoard%' OR
+            nrp LIKE '%$keywoard%'";
+  $result = mysqli_query($conn, $query);
+
+  $rows = [];
+  while ($row = mysqli_fetch_assoc($result)) {
+    $rows[] = $row;
+  }
+
+  return $rows;
 }
