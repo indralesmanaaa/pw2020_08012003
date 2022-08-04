@@ -26,16 +26,82 @@ function query($query)
   return $rows;
 }
 
+function upload()
+{
+  $namaFile = $_FILES['gambar']['name'];
+  $tipeFile = $_FILES['gambar']['type'];
+  $ukuranFile = $_FILES['gambar']['size'];
+  $error = $_FILES['gambar']['error'];
+  $tmpFile = $_FILES['gambar']['tmp_name'];
+
+  // Ketika tidak ada gambar yang dipilih
+  // 4 pada error adalah ketika user tidak memilih gambar
+  if ($error == 4) {
+    echo "<script>
+            alert('pilih gambar terlebih dahulu!');
+          </script>";
+    return false;
+  }
+
+  // cek ekstensi file 
+  $daftarGambar = ['jpg', 'jpeg', 'png'];
+  // explode (function global) digunakan untuk memecah string
+  $ekstensiFile = explode('.', $namaFile);
+  // strtolowe digunakan untuk mengubah huruf besar menjadi kecil, contoh JPG = jpg
+  $ekstensiFile = strtolower(end($ekstensiFile));
+  if (!in_array($ekstensiFile, $daftarGambar)) {
+    echo "<script>
+            alert('yang anda pilih bukan gambar');
+          </script>";
+    return false;
+  }
+
+  // cek type file
+  // coba vardump tipe file terlebih dahulu untuk mengetahui tipe filenya apa
+  // var_dump($tipeFile);
+  // die;
+  if ($tipeFile != 'image/jpeg' && $tipeFile != 'image/png') {
+    echo "<script>
+            alert('yang anda pilih bukan gambar');
+          </script>";
+    return false;
+  }
+
+  // cek ukuran file
+  // maksimal 5 mb = 5000000(5 juta byte)
+  if ($ukuranFile > 5000000) {
+    echo "<script>
+            alert('Ukuran file terlalu besar');
+          </script>";
+    return false;
+  }
+
+  // lolos pengecekkan
+  // siap upload file
+  // generate nama file baru
+  $namaFileBaru = uniqid();
+  $namaFileBaru .= '.';
+  $namaFileBaru .= $ekstensiFile;
+  // kemungkinan nama file sama, jadi harus di generate dulu
+  move_uploaded_file($tmpFile, 'img/' . $namaFileBaru);
+
+  return $namaFileBaru;
+}
+
 function tambah($data)
 {
   $conn = koneksi();
 
+  // penanganan kesalahannya belum cukup
   $nama = htmlspecialchars($data["nama"]);
-  $nrp = htmlspecialchars($data["nrp"]);
+  $nrp = htmlspecialchars($data["nr p"]);
   $email = htmlspecialchars($data["email"]);
   $jurusan = htmlspecialchars($data["jurusan"]);
-  $gambar = htmlspecialchars($data["gambar"]);
-
+  // $gambar = htmlspecialchars($data["gambar"]);
+  $gambar = upload();
+  if (!$gambar) {
+    return false;
+  }
 
   $query = "INSERT INTO
             mahasiswa
