@@ -35,54 +35,48 @@ function upload()
   $tmpFile = $_FILES['gambar']['tmp_name'];
 
   // Ketika tidak ada gambar yang dipilih
-  // 4 pada error adalah ketika user tidak memilih gambar
   if ($error == 4) {
-    // echo "<script>
-    //         alert('pilih gambar terlebih dahulu!');
-    //       </script>";
-    return 'pp.png';
+    echo "<script>
+            alert('Pilih gambar terlebih dahulu');
+          </script>";
+    return false;
   }
 
-  // cek ekstensi file 
-  $daftarGambar = ['jpg', 'jpeg', 'png'];
-  // explode (function global) digunakan untuk memecah string
+  // Cek Ekstensi file
+  $daftarGambar =  ['jpg', 'jpeg', 'png'];
   $ekstensiFile = explode('.', $namaFile);
-  // strtolowe digunakan untuk mengubah huruf besar menjadi kecil, contoh JPG = jpg
   $ekstensiFile = strtolower(end($ekstensiFile));
   if (!in_array($ekstensiFile, $daftarGambar)) {
     echo "<script>
-            alert('yang anda pilih bukan gambar');
+            alert('Yang anda pilih bukan gambar');
           </script>";
     return false;
   }
 
-  // cek type file
-  // coba vardump tipe file terlebih dahulu untuk mengetahui tipe filenya apa
-  // var_dump($tipeFile);
-  // die;
+  // cek tipe file
   if ($tipeFile != 'image/jpeg' && $tipeFile != 'image/png') {
     echo "<script>
-            alert('yang anda pilih bukan gambar');
+            alert('Yang anda pilih bukan gambar');
           </script>";
     return false;
   }
 
-  // cek ukuran file
-  // maksimal 5 mb = 5000000(5 juta byte)
+  // Cek ukuran file
+  // Maksimal 5 mb == 5000000
   if ($ukuranFile > 5000000) {
     echo "<script>
-            alert('Ukuran file terlalu besar');
+            alert('ukuran terlalu besar');
           </script>";
     return false;
   }
 
-  // lolos pengecekkan
+  // Lolos pengecekkan
   // siap upload file
   // generate nama file baru
   $namaFileBaru = uniqid();
-  $namaFileBaru .= '.';
+  $namaFileBaru .= ".";
   $namaFileBaru .= $ekstensiFile;
-  // kemungkinan nama file sama, jadi harus di generate dulu
+
   move_uploaded_file($tmpFile, 'img/' . $namaFileBaru);
 
   return $namaFileBaru;
@@ -92,12 +86,13 @@ function tambah($data)
 {
   $conn = koneksi();
 
-  // penanganan kesalahannya belum cukup
   $nama = htmlspecialchars($data["nama"]);
   $nrp = htmlspecialchars($data["nrp"]);
   $email = htmlspecialchars($data["email"]);
   $jurusan = htmlspecialchars($data["jurusan"]);
   // $gambar = htmlspecialchars($data["gambar"]);
+
+  // upload gambar
   $gambar = upload();
   if (!$gambar) {
     return false;
@@ -115,12 +110,6 @@ function tambah($data)
 function hapus($id)
 {
   $conn = koneksi();
-
-  $m = query("SELECT * FROM mahasiswa WHERE id=$id");
-  if ($m['gambar'] != 'pp.png') {
-    unlink('img/' . $m['gambar']);
-  }
-
   mysqli_query($conn, "DELETE FROM mahasiswa WHERE id=$id") or die(mysqli_error($conn));
   return mysqli_affected_rows($conn);
 }
@@ -133,16 +122,8 @@ function ubah($data)
   $nrp = htmlspecialchars($data["nrp"]);
   $email = htmlspecialchars($data["email"]);
   $jurusan = htmlspecialchars($data["jurusan"]);
-  $gambarLama = htmlspecialchars($data["gambar-lama"]);
+  $gambar = htmlspecialchars($data["gambar"]);
 
-  $gambar = upload();
-  if (!$gambar) {
-    return false;
-  }
-
-  if ($gambar == 'pp.png') {
-    $gambar = $gambarLama;
-  }
 
   $query = "UPDATE mahasiswa SET
             nama = '$nama',
@@ -155,13 +136,13 @@ function ubah($data)
   return mysqli_affected_rows($conn);
 }
 
-function cari($keyword)
+function cari($keywoard)
 {
   $conn = koneksi();
 
   $query = "SELECT * FROM mahasiswa
-            WHERE nama LIKE '%$keyword%' OR
-            nrp LIKE '%$keyword%'";
+            WHERE nama LIKE '%$keywoard%' OR
+            nrp LIKE '%$keywoard%'";
   $result = mysqli_query($conn, $query);
 
   $rows = [];

@@ -1,8 +1,8 @@
 <?php
 
 require '../function.php';
-
 $mahasiswa = cari($_GET['keyword']);
+
 ?>
 
 <table border="1" cellpadding="10" cellspacing="0">

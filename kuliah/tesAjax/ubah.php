@@ -46,7 +46,7 @@ if (isset($_POST["ubah"])) {
 
 <body>
   <h3>Ubah Data Mahasiswa</h3>
-  <form action="" method="POST" enctype="multipart/form-data">
+  <form action="" method="POST">
     <ul>
       <!-- Menambahkan id yang tidak terlihat user -->
       <input type="hidden" name="id" value="<?= $mhs['id']; ?>">
@@ -75,19 +75,16 @@ if (isset($_POST["ubah"])) {
         </label>
       </li>
       <li>
-        <input type="hidden" name="gambar-lama" value="<?= $mhs['gambar']; ?>">
         <label>
           Gambar :
-          <input type="file" name="gambar" class="gambar" onchange="previewImage()">
+          <input type="text" name="gambar" required value="<?= $mhs['gambar']; ?>">
         </label>
-        <img src="img/<?= $mhs['gambar']; ?>" width="120" style="display: block;" class="img-preview">
       </li>
       <li>
         <button type="submit" name="ubah">Ubah Data</button>
       </li>
     </ul>
   </form>
-  <script src="js/script.js"></script>
 </body>
 
 </html>

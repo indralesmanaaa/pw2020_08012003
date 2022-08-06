@@ -2,13 +2,12 @@ const tombolCari = document.querySelector('.tombol-cari');
 const keyword = document.querySelector('.keyword');
 const container = document.querySelector('.container');
 
-// Hilangkan tombol cari
 tombolCari.style.display = 'none';
-// Event ketika menuliskan keyword
-keyword.addEventListener('keyup', function () {
-  // Ajax
 
-  // metode (xmlhttprequest) :
+// event ketika menuliskan menuliskan keyboard
+keyword.addEventListener('keyup', function () {
+  // ajax
+  // xmlhttprequest
   // const xhr = new XMLHttpRequest();
 
   // xhr.onreadystatechange = function () {
@@ -20,12 +19,11 @@ keyword.addEventListener('keyup', function () {
   // xhr.open('get', 'ajax/ajax_cari.php?keyword=' + keyword.value);
   // xhr.send();
 
-  // metode (fetch()) :
+  // fetch
   fetch('ajax/ajax_cari.php?keyword=' + keyword.value)
     .then((response) => response.text())
     .then((response) => (container.innerHTML = response));
 });
-
 
 // Preview image untuk tambah dan ubah
 function previewImage() {
