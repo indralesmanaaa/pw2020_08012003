@@ -184,6 +184,14 @@ function login($data)
     if (password_verify($password, $user["password"])) {
       // set session
       $_SESSION['login'] = true;
+
+      //Remember me
+      if (isset($_POST['remember'])) {
+        // buat cookie
+        setcookie('id', $user['id'], time() + 60);
+        setcookie('key', hash('sha256', $user['username']), time() + 60);
+      }
+
       header("Location: index.php");
       exit;
     }
@@ -193,6 +201,7 @@ function login($data)
     'pesan' => 'Username/Paswword salah!'
   ];
 }
+
 
 function registrasi($data)
 {
